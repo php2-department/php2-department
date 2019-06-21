@@ -1,23 +1,3 @@
-<?php
-$nameErr = "";
-$noerror = true;
-    if (isset($_REQUEST['submit'])) {
-        $name = $_REQUEST['name'];
-        $email = $_REQUEST['email'];
-        $message = $_REQUEST['message'];
-        $to = "To: php2.department@gmail.com";
-        $subject = "From Clients " . "$name";
-        $headers = "From: " . "$email";
-        if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
-            $nameErr = "Only letters and white space allowed"; 
-            $noerror = false;
-        }
-
-        if ($noerror) {
-            mail($to, $subject, $message, $headers);
-        }
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +11,8 @@ $noerror = true;
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -383,18 +365,18 @@ $noerror = true;
             <p>1600 Pennsylvania Ave NW, Washington, DC 20500, United States of America. Tel: (202) 456-1111</p>
         </div>
         <div class="form form-group">
-            <form action="" method="post">
+            <form method="POST">
                 <div class="row"><div class="col-md-6 col-sm-12">
-                    <input type="text" name="name" placeholder="Your Name*" class="form-control" required>
+                    <input type="text" name="name" id="name" placeholder="Your Name*" class="form-control" required>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <input type="email" name="email" placeholder="Your Email*" class="form-control" required>
+                    <input type="email" name="email" id="email" placeholder="Your Email*" class="form-control" required>
                 </div></div><br>
                 <div class="row"><div class="col-md-12 col-sm-12">
-                    <textarea name="message" placeholder="Your Mesasage*" rows="6" class="form-control" required></textarea>
+                    <textarea name="message" id="message" placeholder="Your Mesasage*" rows="6" class="form-control" required></textarea>
                 </div></div><br>
                 <div class="row">
-                    <center><input type="submit" name="submit" value="SEND MESSAGE" class="btn btn-primary"></center>
+                    <center><input type="submit" name="submit" id="submit" value="SEND MESSAGE" class="btn btn-primary"></center>
                 </div>
             </form>
         </div>
@@ -416,5 +398,28 @@ $noerror = true;
     </div>
 </div>
 <!-- //footer -->
+
+<script>
+$(document).ready(function(){
+    $("#submit").click(function(){
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var message = $("#message").val();
+        var dataString = 'name='+ name + '&email='+ email + '&message='+ message;
+
+        $.ajax({
+            type: "POST",
+            url: "mail.php",
+            data: dataString,
+            cache: false,
+            success: function(result) {
+                $("#display").html(result);
+            }
+        });
+    return false;
+    });
+});
+</script>
+
 </body>
 </html>
